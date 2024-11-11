@@ -1,22 +1,17 @@
-
-# Используем официальный Python образ
+# Базовый образ Python
 FROM python:3.10-slim
 
-# Устанавливаем рабочую директорию
+# Установка необходимых библиотек для Tkinter
+RUN apt-get update && \
+    apt-get install -y python3-tk libx11-6 tk8.6-dev tcl8.6-dev libxrender1 libxtst6 libxi6 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Установка Python-зависимостей
+RUN pip install numpy matplotlib
+
+# Копирование и установка приложения
 WORKDIR /app
+COPY app/app.py .
 
-# Копируем requirements.txt в контейнер
-COPY requirements.txt .
-
-# Устанавливаем зависимости
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Копируем всё приложение в контейнер
-COPY . .
-
-# Указываем порт, который будет использовать приложение (например, 8000)
-EXPOSE 8000
-
-# Определяем команду для запуска приложения
-# Предполагаем, что ваше приложение запускается командой python app.py
-CMD ["python", "app.py"]
+# Запуск приложения
+CMD ["python3", "app.py"]
