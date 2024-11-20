@@ -36,43 +36,73 @@ class Lab1App:
         self.fig, self.ax, self.canvas = initialize_plot(self.root)
 
     def run_classification(self):
+        # Генерация случайных координат точек x, y в диапазоне [1, 100]
         x = [random.randint(1, 100) for _ in range(30)]
         y = [random.randint(1, 100) for _ in range(30)]
+        # Генерация случайных меток классов для точек: 1 или -1
         metka = [random.choice([1, -1]) for _ in range(30)]
+        # Получаем точки, метки и (возможно) их предыдущее распределение через random_liner_yes
         result = self.random_liner_yes(30)
+        # Запускаем обучение линейного классификатора
         w = classification(result[0], result[1], result[2])
 
+        # Если обучение не удалось (вес w[2] равен 0), сообщаем, что разделяющая линия не найдена
         if w[2] == 0:
             self.label1.config(text="Уравнение не найдено")
+            # Рисуем график точек без разделяющей линии
             plot_classification(self.ax, self.canvas, result[0], result[1], result[2])
         else:
+            # Вычисляем коэффициенты уравнения прямой: y = a * x + b
             a, b = -w[1] / w[2], -w[0] / w[2]
+            # Формируем текст уравнения прямой
             equation_text = f"Уравнение: {a:.2f}x + {b:.2f}"
+            # Выводим уравнение на экран
             self.label1.config(text=equation_text)
+            # Рисуем график точек с разделяющей прямой
             plot_classification(self.ax, self.canvas, result[0], result[1], result[2], a, b)
 
     def run_regression(self):
+        # Генерация массива случайных значений y (от 0 до 10)
         y = [random.random() * 10 for _ in range(50)]
+        # Выполнение линейной регрессии. Функция regress возвращает массив весов w:
+        # w[0] — свободный член, w[1] — наклон линии, w[2] — индикатор успешности регрессии
         w = regress(y)
 
+        # Проверка, удалось ли построить уравнение прямой
         if w[2] == 0:
+            # Если построить уравнение не удалось, отображаем соответствующее сообщение
             self.label2.config(text="Уравнение не найдено")
         else:
+            # Формируем текст уравнения в виде "w[1]x + w[0]"
             equation_text = f"Уравнение: {w[1]:.2f}x + {w[0]:.2f}"
+            # Выводим уравнение в метке интерфейса
             self.label2.config(text=equation_text)
+            # Строим график данных с линией регрессии
             plot_regression(self.ax, self.canvas, y, w[1], w[0])
 
     def random_liner_yes(self, number):
+        # Инициализация результата: три списка для x, y и меток классов
         result = [[], [], []]
+        # Случайные параметры прямой: наклон a (отрицательный) и смещение b
         a, b = -random.random(), random.randint(50, 80)
 
+        # Генерация указанного количества точек (number)
         for i in range(number):
+            # Случайные координаты точки (x, y_val) в диапазоне [1, 100]
             x, y_val = random.randint(1, 100), random.randint(1, 100)
+
+            # Проверяем, находится ли точка в узкой полосе шириной 8 вокруг прямой
+            # Если точка попадает в полосу, пропускаем её
             if (y_val + 4 > x * a + b) and (y_val - 4 < x * a + b):
                 continue
+
+            # Добавляем координаты точки в результат
             result[0].append(x)
             result[1].append(y_val)
+            # Присваиваем метку классу: 1, если точка выше прямой, -1 — ниже
             result[2].append(1 if y_val > x * a + b else -1)
+
+        # Возвращаем массив с координатами точек и их метками
         return result
 
 
