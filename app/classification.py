@@ -19,7 +19,7 @@ def classification(x, y, metka):
                 # Ошибка между реальной меткой и ответом классификатора
                 delta = metka[i] - met_otvet
                 # Обновляем веса классификатора
-                w[0] += eta * delta
+                w[0] += eta * delta # разница между значением до и после
                 w[1] += eta * delta * x[i]
                 w[2] += eta * delta * y[i]
                 # Увеличиваем счётчик ошибок
