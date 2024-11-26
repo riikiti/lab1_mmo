@@ -63,7 +63,7 @@ class Lab1App:
 
     def run_regression(self):
         # Генерация массива случайных значений y (от 0 до 10)
-        y = [random.random() * 10 for _ in range(50)]
+        y = [random.random() * 2.5 for _ in range(50)]
         # Выполнение линейной регрессии. Функция regress возвращает массив весов w:
         # w[0] — свободный член, w[1] — наклон линии, w[2] — индикатор успешности регрессии
         w = regress(y)
